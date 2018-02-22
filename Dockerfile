@@ -8,11 +8,12 @@
 FROM tomcat:8
 
 # Prepare and install the jasperserver
-RUN mkdir -p /usr/src/jasperreports-server
-COPY resources/jasperreports-server-cp-bin/* /usr/src/jasperreports-server/
+COPY resources/*.zip /tmp/jasperreports-server.zip
 RUN apt-get update && apt-get install -y postgresql-client unzip xmlstarlet libpostgresql-jdbc-java \
   && rm -rf /var/lib/apt/lists/* \
-  && cp /usr/src/jasperresports-server/buildomatic/sample_conf/postgresql_master.properties /usr/src/jasperresports-server/buildomatic/default_master.properties \
+  && mkdir -p /usr/src/jasperreports-server \
+  && unzip /tmp/jasperreports-server.zip -d /usr/src/jasperreports-server \
+  && cp /usr/src/jasperreports-server/buildomatic/sample_conf/postgresql_master.properties /usr/src/jasperresports-server/buildomatic/default_master.properties \
   && sed -i '46s/^/# /g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
   && sed -i '47s/^.*/appServerDir = \/usr\/local\/tomcat/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
   && sed -i 's/dbHost=localhost/dbHost=${DBHOST:-dbhost}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
