@@ -9,19 +9,21 @@ FROM tomcat:8
 
 # Prepare and install the jasperserver
 COPY resources/*.zip resources/extract.py /tmp/
-RUN apt-get update && apt-get install -y postgresql-client unzip xmlstarlet libpostgresql-jdbc-java \
+RUN apt-get update && apt-get install -y python python3 postgresql-client unzip xmlstarlet libpostgresql-jdbc-java \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir -p /usr/src/jasperreports-server \
-  && python /tmp/extract.py /tmp/ /usr/src/jasperreports-server \
-  && cp /usr/src/jasperreports-server/buildomatic/sample_conf/postgresql_master.properties /usr/src/jasperresports-server/buildomatic/default_master.properties \
+  && python /tmp/extract.py --zip /tmp/ --dest /usr/src/jasperreports-server \
+  && cp /usr/src/jasperreports-server/buildomatic/sample_conf/postgresql_master.properties /usr/src/jasperreports-server/buildomatic/default_master.properties \
   && sed -i '46s/^/# /g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
   && sed -i '47s/^.*/appServerDir = \/usr\/local\/tomcat/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
-  && sed -i 's/dbHost=localhost/dbHost=${DBHOST:-dbhost}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
-  && sed -i 's/dbPort=5432/dbPort=${DBPORT:-5432}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
-  && sed -i 's/dbUsername=postgres/dbUsername=${DBUSER:-postgres}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
-  && sed -i 's/dbPassword=postgres/dbPassword=${DBPASS:-postgres}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
+  && sed -i 's/dbHost=localhost/dbHost=${DBHOST}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
+  && sed -i 's/dbPort=5432/dbPort=${DBPORT}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
+  && sed -i 's/dbUsername=postgres/dbUsername=${DBUSER}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
+  && sed -i 's/dbPassword=postgres/dbPassword=${DBPASS}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
   && mkdir -p /usr/local/share/jasperresports-pro/license \
-  && /usr/src/jasperreports-server/buildomatic/js-install.sh \
+  && find /usr/src/jasperreports-server -name "*.sh" -exec chmod +x {} \; \
+  && chmod -x /usr/src/jasperreports-server/apache-ant/bin/ant \
+  && cd /usr/src/jasperreports-server/buildomatic/ && ./js-install-ce.sh \
   && rm -rf /tmp/*
 
 # Extract phantomjs, move to /usr/local/share/phantomjs, link to /usr/local/bin.

@@ -18,7 +18,7 @@ args=parser.parse_args()
 if os.path.isfile(args.zip):
    files=[args.zip, ]
 else:
-   files= [ f for f in os.listdir(args.zip) if os.path.isfile(f) and f.upper().endswith('.ZIP')]
+   files= [ os.path.join(args.zip, f) for f in os.listdir(args.zip) if os.path.isfile(os.path.join(args.zip, f)) and f.upper().endswith('.ZIP')]
 output=args.dest
 if not os.path.isdir(output): os.mkdir(output)
 
