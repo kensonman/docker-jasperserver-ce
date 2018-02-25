@@ -8,23 +8,26 @@
 FROM tomcat:8
 
 # Prepare and install the jasperserver
-COPY resources/*.zip resources/extract.py /tmp/
-RUN apt-get update && apt-get install -y python python3 postgresql-client unzip xmlstarlet libpostgresql-jdbc-java \
+COPY resources/*.zip resources/extract.py scripts/entrypoint.sh /tmp/
+RUN apt-get update && apt-get install -y python python3 postgresql-client postgresql unzip xmlstarlet libpostgresql-jdbc-java \
+  && service postgresql start \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir -p /usr/src/jasperreports-server \
   && python /tmp/extract.py --zip /tmp/ --dest /usr/src/jasperreports-server \
   && cp /usr/src/jasperreports-server/buildomatic/sample_conf/postgresql_master.properties /usr/src/jasperreports-server/buildomatic/default_master.properties \
   && sed -i '46s/^/# /g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
   && sed -i '47s/^.*/appServerDir = \/usr\/local\/tomcat/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
-  && sed -i 's/dbHost=localhost/dbHost=${DBHOST}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
-  && sed -i 's/dbPort=5432/dbPort=${DBPORT}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
-  && sed -i 's/dbUsername=postgres/dbUsername=${DBUSER}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
-  && sed -i 's/dbPassword=postgres/dbPassword=${DBPASS}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
   && mkdir -p /usr/local/share/jasperresports-pro/license \
   && find /usr/src/jasperreports-server -name "*.sh" -exec chmod +x {} \; \
-  && chmod -x /usr/src/jasperreports-server/apache-ant/bin/ant \
+  && chmod +x /usr/src/jasperreports-server/apache-ant/bin/ant \
   && cd /usr/src/jasperreports-server/buildomatic/ && ./js-install-ce.sh \
+  && mv /tmp/entrypoint.sh /entrypoint.sh \
+  && cmmod +x /entrypoint.sh \
   && rm -rf /tmp/*
+#  && sed -i 's/dbHost=localhost/dbHost=${DBHOST}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
+#  && sed -i 's/dbPort=5432/dbPort=${DBPORT}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
+#  && sed -i 's/dbUsername=postgres/dbUsername=${DBUSER}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
+#  && sed -i 's/dbPassword=postgres/dbPassword=${DBPASS}/g' /usr/src/jasperreports-server/buildomatic/default_master.properties \
 
 # Extract phantomjs, move to /usr/local/share/phantomjs, link to /usr/local/bin.
 # Comment out if phantomjs not required.
@@ -84,7 +87,6 @@ ENV JAVA_OPTS="${JAVA_OPTIONS:--Xms1024m -Xmx2048 -Xss2m -XX:+UseConcMarkSweepGC
 # or use dynamic ports.
 EXPOSE ${HTTP_PORT:-8080} ${HTTPS_PORT:-8443}
 
-COPY scripts/entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Default action executed by entrypoint script.
