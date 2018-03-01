@@ -38,6 +38,7 @@ install_jasperserver() {
 run_jasperserver() {
    if [ -d "$CATALINA_HOME/webapps/examples" ]; then
       install_jasperserver
+      rm -rf "$CATALINA_HOME}/webapps/examples" ;
    fi
   
    catalina.sh run
