@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+   app:
+      build: .
+      container_name: "${DOMAIN}.app"
+      ports:
+         - "8080:8080"
+         - "8443:8443"
+      environment:
+         - DB_HOST=dbhost
+      links:
+         - dbm:dbhost
+      depends_on:
+         - dbm
+   dbm:
+      image: "postgres:latest"
+      container_name: "${DOMAIN}.dbm"
+      environment:
+         - POSTGRES_USER=${DBUSER}
+         - POSTGRES_PASSWORD=${DBPASS}
+         - POSTGRES_DB=${DBNAME}
