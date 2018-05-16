@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# The src folder that contains all the buildomatic scripts.
+# It should be configured by docker.
+TRGDIR=${TRGDIR:-/usr/src/jasperreports-server}
+
+# Sets script to fail if any command fails.
+set -e
+
+run_server() {
+   if [ -d "${TRGDIR}" ]; then
+      echo "The jasper-server is not found or it is not installed at \"${TRGDIR}\"."
+      echo "Quitting..."
+      exit 1
+   fi
+  
+   echo "Starting the internal postgresql ..."
+   ${TRGDIR}/ctlscript.sh start postgresql
+
+   echo "Running the tomcat..."
+   ${CATALINA_HOME}/bin/catalina.sh run
+}
+
+case "$1" in
+  run)
+    shift 1
+    catalina.sh run
+    run_server "$@"
+    ;;
+  *)
+    exec "$@"
+esac
+
+

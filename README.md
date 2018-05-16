@@ -3,6 +3,11 @@ Introduction
 
 The project is going to build the docker image that installed the jasperserver-ce 6.x.
 
+Revamp
+------
+
+After a lot if studies, the jasper-server is not easy to install thru WAR and startalone script.
+
 
 Installation
 ----
