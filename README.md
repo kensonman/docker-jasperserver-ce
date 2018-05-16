@@ -1,7 +1,7 @@
 Introduction
 ====
 
-The project is going to build the docker image that installed the jasperserver-ce 6.x.
+The project is going to build the docker image that installed the jasperserver-ce 7.x.
 
 Supporting Version
 ----
