@@ -19,7 +19,7 @@ Installation
 
 4. Build the image by using the following commands:
 
-      docker build -t jasperserver-ce:latest -t jasperserver-ce:7 -e TARGET=TIB_js-jrs-cp_7.1.0_linux_x86_64.run .
+      docker build -t jasperserver-ce:latest -t jasperserver-ce:7  .
 
 5. The image should be builded successfully and tagged as "jasperserver-ce:latest" and "jasperserver-ce:7";
 
