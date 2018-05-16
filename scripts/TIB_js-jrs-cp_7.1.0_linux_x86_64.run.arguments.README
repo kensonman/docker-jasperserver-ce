@@ -1,0 +1,36 @@
+                                                 # From line 1 to line 23, asking the installer to show the license arguments
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+                                                 #
+y                                                # Accept the arguments
+2                                                # Custom installation
+/usr/src/jasperreports-server                    # Installation Path
+2                                                # Use existing Tomcat, due to the docker container base on the tomcat:8
+1                                                # Use the bundled PostgreSQL for internal database
+1                                                # Use the bundled PhantomJS for report rendering
+8080                                             # Tomcat Port
+5432                                             # PostgreSQL Port
+/usr/local/tomcat                                # CATALINA_HOME
+n                                                # Do not install the sample database
+y                                                # Confirm to install
+n                                                # Opt-out JasperReports Server Heartbeat
+                                                 # Finishing
