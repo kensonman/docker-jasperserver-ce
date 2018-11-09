@@ -13,6 +13,10 @@ run_server() {
       echo "Quitting..."
       exit 1
    fi
+
+   echo "Linkage additional jars..."
+   mkdir -p ${CATALINA_HOME}/jars
+   ln -sf ${CATALINA_HOME}/jars/*.jar ${CATALINA_HOME}/lib/
   
    echo "Starting the internal database ..."
    ${TRGDIR}/ctlscript.sh start postgresql
